@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://campus-marketplace-aye7.onrender.com";
 
 function Signup() {
   const navigate = useNavigate();
