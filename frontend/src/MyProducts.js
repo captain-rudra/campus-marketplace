@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://campus-marketplace-aye7.onrender.com";
 
 function MyProducts({ token }) {
   // ---------------------------------------------------------
