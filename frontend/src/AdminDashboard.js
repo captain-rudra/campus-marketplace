@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 // ব্যাকএন্ডের অ্যাড্রেস
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://campus-marketplace-aye7.onrender.com";
 
 function AdminDashboard({ token }) {
   // ---------------------------------------------------------
