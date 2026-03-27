@@ -17,6 +17,9 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("API Running 🚀");
+});
 app.use("/api/admin", adminRoutes);
 app.use("/uploads", express.static("uploads"));
 
