@@ -38,11 +38,14 @@ function MyProducts({ token }) {
     }
   };
 
-  // পেজ লোড হলে বা টোকেন চেঞ্জ হলে প্রোডাক্টগুলো আনবে
- useEffect(() => {
+  // পেজ লোড হলে বা টোকেন চেঞ্জ হলে প্রোডাক্টগুলো আনবে  
+  useEffect(() => {
   fetchMyProducts();
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, [token]);
+}, [token, fetchMyProducts]);
+//  useEffect(() => {
+//   fetchMyProducts();
+// // eslint-disable-next-line react-hooks/exhaustive-deps
+// }, [token]);
 
   // ---------------------------------------------------------
   // ৩. হ্যান্ডলার ফাংশনসমূহ (Input Handlers)
