@@ -39,9 +39,9 @@ function MyProducts({ token }) {
   };
 
   // পেজ লোড হলে বা টোকেন চেঞ্জ হলে প্রোডাক্টগুলো আনবে
-  // eslint-disable-next-line
-useEffect(() => {
+ useEffect(() => {
   fetchMyProducts();
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [token]);
 
   // ---------------------------------------------------------
