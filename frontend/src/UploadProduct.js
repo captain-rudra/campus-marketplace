@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://campus-marketplace-aye7.onrender.com";
 
 function UploadProduct({ token }) {
   const [title, setTitle] = useState("");
