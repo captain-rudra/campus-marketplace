@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 const API_BASE = "https://campus-marketplace-aye7.onrender.com";
 
@@ -7,7 +7,7 @@ function MyProducts({ token }) {
   // ১. States (স্টেটসমূহ)
   // ---------------------------------------------------------
   const [products, setProducts] = useState([]); // ইউজারের নিজের প্রোডাক্টের লিস্ট
-  const [loading, setLoading] = useState(false); // ফর্ম সাবমিট করার সময় বাটনে লোডিং দেখানোর জন্য
+  const [loading, setLoading] = useState(false); // ফর্ম সাবমিট করার সময় বাটনে লোডিং দেখানোর জন্য
   const [editingId, setEditingId] = useState(null); // কোনো প্রোডাক্ট এডিট করতে চাইলে তার ID এখানে জমা হবে
 
   // আপলোড/এডিট ফর্মের ডেটা ধরে রাখার জন্য স্টেট
@@ -19,15 +19,15 @@ function MyProducts({ token }) {
     status: "Available",
   });
   
-  // ৪টি ছবির স্লটের জন্য অ্যারে [প্রথম, দ্বিতীয়, তৃতীয়, চতুর্থ]
+  // ৪টি ছবির স্লটের জন্য অ্যারে [প্রথম, দ্বিতীয়, তৃতীয়, চতুর্থ]
   const [images, setImages] = useState([null, null, null, null]); 
 
   // ---------------------------------------------------------
-  // ২. API কল (নিজের প্রোডাক্ট নিয়ে আসা)
+  // ২. API কল (নিজের প্রোডাক্ট নিয়ে আসা) - useCallback ব্যবহার করে ফিক্স করা হয়েছে
   // ---------------------------------------------------------
-  const fetchMyProducts = async () => {
+  const fetchMyProducts = useCallback(async () => {
     try {
-      // ব্যাকএন্ডে রিকোয়েস্ট করা হচ্ছে, সাথে ইউজারের Token পাঠানো হচ্ছে (যাতে ব্যাকএন্ড বুঝতে পারে কে রিকোয়েস্ট করছে)
+      // ব্যাকএন্ডে রিকোয়েস্ট করা হচ্ছে, সাথে ইউজারের Token পাঠানো হচ্ছে
       const res = await fetch(`${API_BASE}/api/products/my-products`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -36,16 +36,12 @@ function MyProducts({ token }) {
     } catch (err) {
       console.error("Failed to fetch products");
     }
-  };
+  }, [token]); // token ডিপেন্ডেন্সি হিসেবে দেওয়া হলো
 
   // পেজ লোড হলে বা টোকেন চেঞ্জ হলে প্রোডাক্টগুলো আনবে  
   useEffect(() => {
-  fetchMyProducts();
-}, [token, fetchMyProducts]);
-//  useEffect(() => {
-//   fetchMyProducts();
-// // eslint-disable-next-line react-hooks/exhaustive-deps
-// }, [token]);
+    fetchMyProducts();
+  }, [fetchMyProducts]); // fetchMyProducts ডিপেন্ডেন্সি হিসেবে দেওয়া হলো
 
   // ---------------------------------------------------------
   // ৩. হ্যান্ডলার ফাংশনসমূহ (Input Handlers)
@@ -71,7 +67,7 @@ function MyProducts({ token }) {
   const handleEditClick = (product) => {
     setEditingId(product._id); // এডিট মোড অন হলো
     
-    // যে প্রোডাক্টে ক্লিক করা হয়েছে, তার পুরনো ডেটাগুলো ফর্মে বসিয়ে দেওয়া হলো
+    // যে প্রোডাক্টে ক্লিক করা হয়েছে, তার পুরনো ডেটাগুলো ফর্মে বসিয়ে দেওয়া হলো
     setFormData({
       title: product.title,
       description: product.description || "", 
@@ -80,10 +76,10 @@ function MyProducts({ token }) {
       status: product.status,
     });
     setImages([null, null, null, null]); // ছবির স্লটগুলো রিসেট করলাম
-    window.scrollTo({ top: 0, behavior: "smooth" }); // পেজের উপরে স্ক্রোল করে ফর্মে নিয়ে যাওয়া হলো
+    window.scrollTo({ top: 0, behavior: "smooth" }); // পেজের উপরে স্ক্রোল করে ফর্মে নিয়ে যাওয়া হলো
   };
 
-  // এডিট ক্যানসেল করার ফাংশন (ফর্ম খালি করে দেওয়া)
+  // এডিট ক্যানসেল করার ফাংশন (ফর্ম খালি করে দেওয়া)
   const handleCancelEdit = () => {
     setEditingId(null);
     setFormData({ title: "", description: "", price: "", isNegotiable: "Negotiable", status: "Available" });
@@ -94,9 +90,9 @@ function MyProducts({ token }) {
   // ৫. ফর্ম সাবমিট করা (POST বা PUT)
   // ---------------------------------------------------------
   const handleSubmit = async (e) => {
-    e.preventDefault(); // পেজ রিলোড হওয়া আটকালাম
+    e.preventDefault(); // পেজ রিলোড হওয়া আটকালাম
     
-    // নতুন আপলোডের সময় প্রথম ছবিটা দেওয়া বাধ্যতামূলক
+    // নতুন আপলোডের সময় প্রথম ছবিটা দেওয়া বাধ্যতামূলক
     if (!editingId && !images[0]) return alert("Please upload the Main Photo! (Slot 1)");
 
     setLoading(true);
@@ -109,7 +105,7 @@ function MyProducts({ token }) {
     data.append("isNegotiable", formData.isNegotiable);
     data.append("status", formData.status);
     
-    // যে স্লটগুলোতে ছবি সিলেক্ট করা হয়েছে, সেগুলো FormData-তে যোগ করা হচ্ছে
+    // যে স্লটগুলোতে ছবি সিলেক্ট করা হয়েছে, সেগুলো FormData-তে যোগ করা হচ্ছে
     images.forEach((img) => {
       if (img) data.append("images", img);
     });
@@ -128,7 +124,7 @@ function MyProducts({ token }) {
       if (res.ok) {
         alert(editingId ? "Ad Updated Successfully! ✏️" : "Product Uploaded Successfully! 🚀");
         handleCancelEdit(); // ফর্ম রিসেট
-        fetchMyProducts();  // আপডেট হওয়া লিস্ট আবার লোড করা হলো
+        fetchMyProducts();  // আপডেট হওয়া লিস্ট আবার লোড করা হলো
       } else {
         const errData = await res.json();
         alert(errData.error || "Failed to save");
@@ -191,7 +187,7 @@ function MyProducts({ token }) {
           <option value="Sold">❌ Already Sold</option>
         </select>
         
-        {/* ৪টি ছবির স্লট তৈরি করা হচ্ছে Array Map দিয়ে */}
+        {/* ৪টি ছবির স্লট তৈরি করা হচ্ছে Array Map দিয়ে */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px", marginBottom: "20px" }}>
           {[0, 1, 2, 3].map((index) => (
             <div key={index} style={{ padding: "10px", border: "1px dashed #ccc", borderRadius: "8px", background: "white" }}>
@@ -226,7 +222,7 @@ function MyProducts({ token }) {
         <div style={{ display: "grid", gap: "15px" }}>
           
           {products.map((p) => (
-            // যদি প্রোডাক্ট বিক্রি হয়ে যায় (Sold), তাহলে ব্যাকগ্রাউন্ড হালকা লাল হবে
+            // যদি প্রোডাক্ট বিক্রি হয়ে যায় (Sold), তাহলে ব্যাকগ্রাউন্ড হালকা লাল হবে
             <div key={p._id} style={{ padding: "15px", border: "1px solid #ccc", borderRadius: "8px", background: p.status === "Sold" ? "#ffe6e6" : "white" }}>
               
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "15px" }}>
@@ -275,7 +271,7 @@ function MyProducts({ token }) {
   );
 }
 
-// সিএসএস স্টাইলগুলো একটা অবজেক্টের মধ্যে রাখা হয়েছে বারবার না লেখার জন্য
+// সিএসএস স্টাইলগুলো একটা অবজেক্টের মধ্যে রাখা হয়েছে বারবার না লেখার জন্য
 const styles = {
   input: { width: "100%", padding: "12px", marginBottom: "15px", border: "1px solid #ccc", borderRadius: "5px", boxSizing: "border-box", fontSize: "15px", fontFamily: "inherit" },
   button: { width: "100%", padding: "14px", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold", fontSize: "16px" }
