@@ -65,7 +65,7 @@ function ProductList() {
                   p.images.map((img, index) => (
                     <img 
                       key={index}
-                      src={`${API_BASE}/uploads/${img}`} 
+                      src={img} 
                       alt={`${p.title} ${index + 1}`} 
                       style={{ width: "100%", height: "100%", objectFit: "cover", flexShrink: 0, scrollSnapAlign: "start" }} 
                     />
