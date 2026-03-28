@@ -6,7 +6,7 @@ const sendOTPEmail = async (userEmail, otp) => {
   try {
     const msg = {
       to: userEmail,
-      from: process.env.EMAIL_USER,
+      from: `"Campus Marketplace" <${process.env.EMAIL_USER}>`
       subject: "Your OTP Code 🔐",
       text: `Your OTP is: ${otp}`,
       html: `
@@ -21,8 +21,8 @@ const sendOTPEmail = async (userEmail, otp) => {
     await sgMail.send(msg);
     console.log("Email sent successfully to: " + userEmail);
   } catch (error) {
-    console.error("Email error:", error);
-  }
+  console.error("SendGrid Error:", error.response?.body);
+}
 };
 
 module.exports = { sendOTPEmail };
