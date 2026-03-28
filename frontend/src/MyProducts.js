@@ -231,7 +231,7 @@ function MyProducts({ token }) {
                 <div style={{ display: "flex", gap: "5px", overflowX: "auto", maxWidth: "250px" }}>
                   {p.images && p.images.length > 0 ? (
                     p.images.map((img, i) => (
-                      <img key={i} src={`${API_BASE}/uploads/${img}`} alt="thumbnail" style={{ width: "160px", height: "160px", objectFit: "cover", borderRadius: "5px", border: "1px solid #ddd" }} />
+                      <img key={i} src={img} alt="thumbnail" style={{ width: "160px", height: "160px", objectFit: "cover", borderRadius: "5px", border: "1px solid #ddd" }} />
                     ))
                   ) : (
                     <div style={{ padding: "10px", textAlign: "center", fontSize: "10px", color: "gray", width: "60px", height: "60px", background: "#eee" }}>No Image</div>
