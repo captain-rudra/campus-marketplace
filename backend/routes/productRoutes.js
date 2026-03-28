@@ -35,11 +35,13 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "campus-marketplace",
-    allowed_formats: ["jpg", "png", "jpeg"],
+    allowed_formats: ["jpg", "png", "jpeg","webp"],
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage,
+                        limits: { fileSize: 5 * 1024 * 1024 } 
+                      });
 
 // 🚀 ১. নতুন প্রোডাক্ট আপলোড (সর্বোচ্চ ৪টি ছবি)
 router.post("/", verifyToken, upload.array("images", 4), async (req, res) => {
@@ -47,7 +49,7 @@ router.post("/", verifyToken, upload.array("images", 4), async (req, res) => {
     const { title, description, price, isNegotiable, status } = req.body;
     
     // ফ্রন্টএন্ড থেকে আসা ছবিগুলোর নামগুলো একটা Array-তে নিচ্ছি
-    const imagePaths = req.files ? req.files.map((file) => file.path) : [];
+    const imagePaths = req.files ? req.files.map((file) => file.path) || [];
 
     const newProduct = new Product({
       title,
