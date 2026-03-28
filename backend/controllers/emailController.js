@@ -3,7 +3,9 @@ const nodemailer = require("nodemailer");
 
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com", // service: "gmail" এর বদলে সরাসরি host ব্যবহার করা হলো
+  port: 465,              // Render-এ ইমেইল পাঠানোর জন্য 465 পোর্ট সবচেয়ে নিরাপদ
+  secure: true,
  auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
