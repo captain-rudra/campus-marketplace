@@ -21,16 +21,24 @@ const verifyToken = (req, res, next) => {
 };
 
 // 📂 Multer সেটআপ (ছবিগুলো uploads ফোল্ডারে সেভ হবে)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
-  },
-  filename: (req, file, cb) => {
-    // ছবির নামের মাঝখানের স্পেস হাইফেন দিয়ে পালটে দিচ্ছি যাতে এরর না আসে
-    const safeName = file.originalname.replace(/\s+/g, '-');
-    cb(null, Date.now() + "-" + safeName);
+
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "campus-marketplace",
+    allowed_formats: ["jpg", "png", "jpeg"],
   },
 });
+
 const upload = multer({ storage });
 
 // 🚀 ১. নতুন প্রোডাক্ট আপলোড (সর্বোচ্চ ৪টি ছবি)
@@ -39,7 +47,7 @@ router.post("/", verifyToken, upload.array("images", 4), async (req, res) => {
     const { title, description, price, isNegotiable, status } = req.body;
     
     // ফ্রন্টএন্ড থেকে আসা ছবিগুলোর নামগুলো একটা Array-তে নিচ্ছি
-    const imagePaths = req.files ? req.files.map((file) => file.filename) : [];
+    const imagePaths = req.files ? req.files.map((file) => file.path) : [];
 
     const newProduct = new Product({
       title,
@@ -110,7 +118,7 @@ router.put("/:id", verifyToken, upload.array("images", 4), async (req, res) => {
     
     // 🛑 ফিক্স: নতুন ছবি দিলে সেগুলো আগের ছবির সাথে যুক্ত (Append) হবে
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map((file) => file.filename);
+      const newImages = req.files.map((file) => file.path);
       imagePaths = [...product.images, ...newImages]; // পুরনো + নতুন
 
       // যদি মোট ছবি ৪টার বেশি হয়ে যায়, তবে প্রথম ৪টি রেখে বাকিগুলো বাদ দেব
