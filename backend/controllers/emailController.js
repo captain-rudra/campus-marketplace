@@ -1,10 +1,9 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com", // service: "gmail" এর বদলে সরাসরি host ব্যবহার করা হলো
-  port: 465,              // Render-এ ইমেইল পাঠানোর জন্য 465 পোর্ট সবচেয়ে নিরাপদ
-  secure: true,           // 465 পোর্টের জন্য এটা true থাকতে হবে  
-  family: 4,
+ host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS, // এটা আপনার সাধারণ পাসওয়ার্ড নয়, জিমেইলের 16 অক্ষরের 'App Password' হতে হবে
