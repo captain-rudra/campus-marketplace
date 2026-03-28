@@ -49,7 +49,7 @@ router.post("/", verifyToken, upload.array("images", 4), async (req, res) => {
     const { title, description, price, isNegotiable, status } = req.body;
     
     // ফ্রন্টএন্ড থেকে আসা ছবিগুলোর নামগুলো একটা Array-তে নিচ্ছি
-    const imagePaths = req.files ? req.files.map((file) => file.path) || [];
+    const imagePaths = req.files ? req.files.map((file) => file.path) : [];
 
     const newProduct = new Product({
       title,
