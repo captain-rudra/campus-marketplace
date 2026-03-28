@@ -1,21 +1,12 @@
-const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
 
-const transporter = nodemailer.createTransport({
- host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // এটা আপনার সাধারণ পাসওয়ার্ড নয়, জিমেইলের 16 অক্ষরের 'App Password' হতে হবে
-  },
-});
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendOTPEmail = async (userEmail, otp) => {
   try {
-    const mailOptions = {
-      // from-এ হার্ডকোড করা ইমেইলের বদলে আপনার Environment Variable বসিয়ে দিলাম
-      from: `"Campus Marketplace" <${process.env.EMAIL_USER}>`, 
+    const msg = {
       to: userEmail,
+      from: process.env.EMAIL_USER,
       subject: "Your OTP Code 🔐",
       text: `Your OTP is: ${otp}`,
       html: `
@@ -24,10 +15,10 @@ const sendOTPEmail = async (userEmail, otp) => {
           <p>Your OTP is: <strong>${otp}</strong></p>
           <p>Please do not share this code with anyone.</p>
         </div>
-      ` // HTML টা একটু সুন্দর করে দিলাম যাতে ইমেইলটা দেখতে প্রফেশনাল লাগে
+      `,
     };
-    
-    await transporter.sendMail(mailOptions);
+
+    await sgMail.send(msg);
     console.log("Email sent successfully to: " + userEmail);
   } catch (error) {
     console.error("Email error:", error);
