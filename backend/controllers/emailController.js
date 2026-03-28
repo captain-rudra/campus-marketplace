@@ -6,7 +6,7 @@ const sendOTPEmail = async (userEmail, otp) => {
   try {
     const msg = {
       to: userEmail,
-      from: `"Campus Marketplace" <${process.env.EMAIL_USER}>`
+      from: `"Campus Marketplace" <${process.env.EMAIL_USER}>`,
       subject: "Your OTP Code 🔐",
       text: `Your OTP is: ${otp}`,
       html: `
