@@ -6,7 +6,7 @@ exports.createProduct = async (req, res) => {
     const { title, price, negotiable } = req.body;
     
     // ছবিগুলো req.files থেকে নেওয়া হচ্ছে (Multer-এর মাধ্যমে)
-    const imageUrls = req.files ? req.files.map((file) => file.filename) : [];
+    const imageUrls = req.files ? req.files.map((file) => file.path) : [];
 
     if (imageUrls.length === 0) {
       return res.status(400).json({ error: "At least 1 image is required." });
