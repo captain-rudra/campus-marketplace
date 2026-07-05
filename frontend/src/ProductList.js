@@ -50,15 +50,15 @@ function ProductList() {
       ) : (
         
         // প্রোডাক্ট দেখানোর গ্রিড (পাশাপাশি কার্ড সাজানোর জন্য)
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "25px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "25px" }}>
           
           {/* লুপ চালিয়ে প্রত্যেকটা প্রোডাক্টের জন্য একটা করে কার্ড তৈরি করা হচ্ছে */}
           {products.map((p) => (
-            <div key={p._id} style={{ border: "1px solid #ddd", borderRadius: "10px", overflow: "hidden", background: "white", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", transition: "0.3s" }}>
+            <div key={p._id} style={{ border: "1px solid #ddd", borderRadius: "14px", overflow: "hidden", background: "white", boxShadow: "0 2px 10px rgba(0,0,0,0.08)", transition: "0.3s" }}>
               
               {/* --- ছবির সেকশন (Image Gallery) --- */}
               {/* display: 'flex' এবং overflowX: 'auto' দিয়ে হরাইজন্টাল স্ক্রোল বা স্লাইডার বানানো হয়েছে */}
-              <div style={{ width: "100%", height: "350px", background: "#f8f9fa", display: "flex", overflowX: "auto", scrollSnapType: "x mandatory", gap: "2px" }}>
+              <div style={{ width: "100%", height: "350px", background: "#f8f9fa", display: "flex", overflowX: "auto", scrollSnapType: "x mandatory" }}>
                 
                 {/* যদি প্রোডাক্টের ছবি থাকে, তাহলে ম্যাপ করে সব ছবি দেখাবে */}
                 {p.images && p.images.length > 0 ? (
@@ -67,7 +67,7 @@ function ProductList() {
                       key={index}
                       src={img} 
                       alt={`${p.title} ${index + 1}`} 
-                      style={{ width: "100%", height: "100%", objectFit: "cover", flexShrink: 0, scrollSnapAlign: "start" }} 
+                      style={{ width: "100%", height: "100%", objectFit: "contain", background: "#fff", flexShrink: 0, scrollSnapAlign: "start" }} 
                     />
                   ))
                 ) : (
